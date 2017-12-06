@@ -39,10 +39,12 @@ public class MyArrayList<E> implements List<E> {
 
 
     public Object[] toArray() {
-        return this.arr;
+        Object[] temp = new Object[size];
+        System.arraycopy(arr, 0, temp, 0, size);
+        return temp;
     }
 
-    //todo
+    //fixme
     public <T> T[] toArray(T[] a) {
         throw new IgnoredMethod();
     }
@@ -99,16 +101,14 @@ public class MyArrayList<E> implements List<E> {
         a[j] = swap;
     }
 
-    //todo
+    //todo check in junit test
     public boolean containsAll(Collection<?> c) {
-//        Iterator<?> iterator = c.iterator();
-//        while (iterator.hasNext()){
-//            Object obj = iterator.next();
-//            for (int i = 0; i < size; i++) {
-//                if (arr[i].equals(obj))
-//            }
-//        }
-        return false;
+        Iterator<?> iterator = c.iterator();
+        while (iterator.hasNext()){
+            Object obj = iterator.next();
+            if (!contains(obj)) return false;
+        }
+        return true;
     }
 
 
@@ -122,13 +122,20 @@ public class MyArrayList<E> implements List<E> {
     }
 
     public boolean removeAll(Collection<?> c) {
-        return false;
+        Iterator iterator = c.iterator();
+        while (iterator.hasNext()){
+            Object obj = iterator.next();
+            remove(obj);
+        }
+        return true;
     }
 
+    //todo
     public boolean removeIf(Predicate<? super E> filter) {
         return false;
     }
 
+    //todo
     public boolean retainAll(Collection<?> c) {
         return false;
     }
@@ -149,11 +156,13 @@ public class MyArrayList<E> implements List<E> {
 //        return null;
     }
 
+    //ignored
     public Stream<E> parallelStream() {
         throw new IgnoredMethod();
 //        return null;
     }
 
+    //todo check in junit
     public int indexOf(Object o) {
         if (o == null) {
             for (int i = 0; i < size; i++)
@@ -223,12 +232,12 @@ public class MyArrayList<E> implements List<E> {
         }
     }
 
-    //fixme
+    //todo check with junit
     @Override
     public E remove(int index) {
-        fastRemove(index);
+        E obj =(E) fastRemove(index);
         arr[--size] = null;
-        return null;
+        return obj;
     }
 
     //done
