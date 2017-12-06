@@ -1,12 +1,14 @@
 package lesson_03;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 public class Lec_01 {
     public static void main(String[] args) {
-        while (true){
-            System.out.println(randomDivider(6));
-        }
+//        while (true){
+//            System.out.println(randomDivider(6));
+//        }
+        ArrayList<Number> arrayList = new ArrayList<>();
     }
 
     static double randomDivider(int x){
