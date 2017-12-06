@@ -1,13 +1,11 @@
 package lesson_03;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Spliterator;
+import java.util.*;
 import java.util.function.Predicate;
+import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
-public class MyArrayList<E> implements Collection<E> {
+public class MyArrayList<E> implements List<E> {
 
     private static final int DEFAULT_CAPACITY = 10;
 
@@ -62,9 +60,16 @@ public class MyArrayList<E> implements Collection<E> {
         return true;
     }
 
+    //TODO
     public boolean remove(Object o) {
 
         return false;
+    }
+
+    private static void exch(int[] a, int i, int j) {
+        int swap = a[i];
+        a[i] = a[j];
+        a[j] = swap;
     }
 
     public boolean containsAll(Collection<?> c) {
@@ -88,13 +93,15 @@ public class MyArrayList<E> implements Collection<E> {
     }
 
     public void clear() {
-
+        arr = new Object[DEFAULT_CAPACITY];
     }
 
+    //ignored
     public Spliterator<E> spliterator() {
         return null;
     }
 
+    //ignored
     public Stream<E> stream() {
         return null;
     }
@@ -116,8 +123,82 @@ public class MyArrayList<E> implements Collection<E> {
         return -1;
     }
 
+   //ignored
     public Iterator<E> iterator() {
         return null;
     }
 
+    @Override
+    public void replaceAll(UnaryOperator<E> operator) {
+
+    }
+
+    @Override
+    public void sort(Comparator<? super E> c) {
+
+    }
+
+    @Override
+    public boolean addAll(int index, Collection<? extends E> c) {
+        rangeCheck(index);
+        return false;
+    }
+
+    @Override
+    public E get(int index) {
+        rangeCheck(index);
+        return (E) arr[index];
+    }
+
+    private void rangeCheck(int index){
+        if (index >= size) throw new IndexOutOfBoundsException();
+    }
+
+    @Override
+    public E set(int index, E element) {
+        E oldObj = (E) arr[index];
+        arr[index] = element;
+        return oldObj;
+    }
+
+    @Override
+    public void add(int index, E element) {
+        rangeCheck(index);
+    }
+
+    //TODO
+    private void moveForwardFrom(int index){
+
+    }
+
+    //TODO
+    @Override
+    public E remove(int index) {
+        return null;
+    }
+
+    //TODO
+    @Override
+    public int lastIndexOf(Object o) {
+        return 0;
+    }
+
+    //TODO
+    @Override
+    public ListIterator<E> listIterator() {
+        return null;
+    }
+
+    //TODO
+    @Override
+    public ListIterator<E> listIterator(int index) {
+        return null;
+    }
+
+    //TODO
+    @Override
+    public List<E> subList(int fromIndex, int toIndex) {
+        return null;
+    }
 }
+
