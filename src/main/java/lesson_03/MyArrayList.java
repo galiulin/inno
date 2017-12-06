@@ -1,5 +1,7 @@
 package lesson_03;
 
+import exceptions.IgnoredMethod;
+
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
@@ -40,8 +42,9 @@ public class MyArrayList<E> implements List<E> {
         return this.arr;
     }
 
+    //todo
     public <T> T[] toArray(T[] a) {
-        return null;
+        throw new IgnoredMethod();
     }
 
     public boolean add(E e) {
@@ -60,11 +63,35 @@ public class MyArrayList<E> implements List<E> {
         return true;
     }
 
-    //TODO
+    //done
     public boolean remove(Object o) {
-
+        if (o == null) {
+            for (int i = 0; i < size; i++) {
+                if (arr[i] == null) {
+                    fastRemove(i);
+                    return true;
+                }
+            }
+        } else {
+            for (int i = 0; i < size; i++) {
+                if (o.equals(arr[i])) {
+                    fastRemove(i);
+                    return true;
+                }
+            }
+        }
         return false;
     }
+
+    private Object fastRemove(int index) {
+        Object o = arr[index];
+        int numMoved = size - index - 1;
+        if (numMoved > 0)
+            System.arraycopy(arr, index + 1, arr, index, numMoved);
+        arr[--size] = null;
+        return o;
+    }
+
 
     private static void exch(int[] a, int i, int j) {
         int swap = a[i];
@@ -72,12 +99,26 @@ public class MyArrayList<E> implements List<E> {
         a[j] = swap;
     }
 
+    //todo
     public boolean containsAll(Collection<?> c) {
+//        Iterator<?> iterator = c.iterator();
+//        while (iterator.hasNext()){
+//            Object obj = iterator.next();
+//            for (int i = 0; i < size; i++) {
+//                if (arr[i].equals(obj))
+//            }
+//        }
         return false;
     }
 
+
     public boolean addAll(Collection<? extends E> c) {
-        return false;
+        Iterator iterator = c.iterator();
+        while (iterator.hasNext()) {
+            Object obj = iterator.next();
+            add((E) obj);
+        }
+        return true;
     }
 
     public boolean removeAll(Collection<?> c) {
@@ -98,16 +139,19 @@ public class MyArrayList<E> implements List<E> {
 
     //ignored
     public Spliterator<E> spliterator() {
-        return null;
+        throw new IgnoredMethod();
+//        return null;
     }
 
     //ignored
     public Stream<E> stream() {
-        return null;
+        throw new IgnoredMethod();
+//        return null;
     }
 
     public Stream<E> parallelStream() {
-        return null;
+        throw new IgnoredMethod();
+//        return null;
     }
 
     public int indexOf(Object o) {
@@ -125,22 +169,26 @@ public class MyArrayList<E> implements List<E> {
 
    //ignored
     public Iterator<E> iterator() {
-        return null;
+        throw new IgnoredMethod();
+//        return null;
     }
 
     @Override
     public void replaceAll(UnaryOperator<E> operator) {
-
+        throw new IgnoredMethod();
     }
 
     @Override
     public void sort(Comparator<? super E> c) {
-
+        throw new IgnoredMethod();
     }
 
     @Override
     public boolean addAll(int index, Collection<? extends E> c) {
         rangeCheck(index);
+        for (Object obj : c) {
+            add((E) obj);
+        }
         return false;
     }
 
@@ -161,26 +209,41 @@ public class MyArrayList<E> implements List<E> {
         return oldObj;
     }
 
+    //todo
     @Override
     public void add(int index, E element) {
         rangeCheck(index);
+        moveForwardFrom(index);
     }
 
-    //TODO
+    //fixme
     private void moveForwardFrom(int index){
+        for (int i = index; i < size; i++) {
 
+        }
     }
 
-    //TODO
+    //fixme
     @Override
     public E remove(int index) {
+        fastRemove(index);
+        arr[--size] = null;
         return null;
     }
 
-    //TODO
+    //done
     @Override
     public int lastIndexOf(Object o) {
-        return 0;
+        if (o == null) {
+            for (int i = size; i >= 0; i--) {
+                if (arr[i] == null) return i;
+            }
+        } else {
+            for (int i = size; i >= 0; i--) {
+                if (o.equals(arr[i])) return i;
+            }
+        }
+        return -1;
     }
 
     //TODO
