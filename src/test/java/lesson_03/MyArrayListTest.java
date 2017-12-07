@@ -39,7 +39,7 @@ public class MyArrayListTest {
 
     @Test
     public void toArray() {
-        String[] str2 = (String[]) myArrayList.toArray();
+        Object[] str2 = myArrayList.toArray();
         assertEquals(str2[0], "string");
     }
 
