@@ -46,6 +46,7 @@ public class MyArrayList<E> implements List<E> {
 
     //fixme
     public <T> T[] toArray(T[] a) {
+        T[] arr = (T[]) new Object[10]; //example
         throw new IgnoredMethod();
     }
 
