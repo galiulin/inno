@@ -1,17 +1,16 @@
 package day_05;
 
 import java.io.Serializable;
-import java.util.List;
 import java.util.Objects;
 
-/*Итерация один сериализация по умолчанию
-* Итерация два дописать в конец файла сумму всех зарплат
-* Итерация три пользовательская сериализация
-* Итерация четыре saveOrUpdate(name)*/
-/*Итерация пять change all work using BufferingStreams
-*
-* решение должно быть грамотно разбито на классы, структурировано, работа с ошибками
-* подумать над тем что возможно стоит держать стрим открытым*/
+/*Итерация 1 сериализация по умолчанию
+ * Итерация 2 дописать в конец файла сумму всех зарплат
+ * Итерация 3 пользовательская сериализация
+ * Итерация 4 saveOrUpdate(name)*/
+/*Итерация 5 change all work using BufferingStreams
+ *
+ * решение должно быть грамотно разбито на классы, структурировано, работа с ошибками
+ * подумать над тем что возможно стоит держать стрим открытым*/
 public class Employe implements Serializable {
     private String name;
     private int age;
@@ -82,14 +81,5 @@ public class Employe implements Serializable {
                 ", salary=" + salary +
                 ", job='" + job + '\'' +
                 '}';
-    }
-}
-
-class EmployeManager {
-    public void save(Employe emp) {}
-    public void delete (Employe emp){}
-    public void getByName (String name){}
-    public List<Employe> getByJob(String job){
-        return null;
     }
 }
