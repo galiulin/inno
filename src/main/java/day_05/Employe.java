@@ -11,6 +11,7 @@ import java.util.Objects;
  *
  * решение должно быть грамотно разбито на классы, структурировано, работа с ошибками
  * подумать над тем что возможно стоит держать стрим открытым*/
+
 public class Employe implements Serializable {
     private String name;
     private int age;
