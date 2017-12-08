@@ -18,13 +18,7 @@ public class EmployeManager {
 
     public Employe getByName(String name) throws IOException {
         try (ObjectInputStream oin = new ObjectInputStream(new FileInputStream(fileName))){
-            Employe readEl = null;
-            do {
-                readEl = (Employe) oin.readObject();
-                if(readEl != null && name.equals(readEl.getName())){
-                    return readEl;
-                }
-            } while (readEl != null);
+            getLonelyEmploye(name, oin);
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -32,8 +26,21 @@ public class EmployeManager {
         throw new NotFoundEmploye();
     }
 
-    private Employe gerLonelyObj(String employeName, ObjectInputStream oin){
-        return null;
+    private Employe getLonelyEmploye(String employeName, ObjectInputStream oin) throws IOException, ClassNotFoundException {
+        Employe readEl = null;
+        do {
+            readEl = (Employe) oin.readObject();
+            if (readEl!= null && employeName.equals(readEl.getName())){
+                return readEl;
+            }
+        } while (readEl != null);
+
+        throw new NotFoundEmploye();
+    }
+
+    private List<Employe> getAllEmployers(ObjectInputStream oin) throws IOException, ClassNotFoundException {
+        List<Employe> readList = (List<Employe>) oin.readObject();
+        return readList;
     }
 
     public List<Employe> getByJob(String job) {

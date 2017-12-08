@@ -23,7 +23,7 @@ public class EmployeManagerTest {
     public void save() throws IOException {
         EmployeManager manager = new EmployeManager();
         manager.save(employe);
-        manager.save(new Employe("second", 54, 999999, "javaProgr"));
+//        manager.save(new Employe("second", 54, 999999, "javaProgr"));
     }
 
     @Test
