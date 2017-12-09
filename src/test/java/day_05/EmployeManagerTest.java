@@ -39,7 +39,7 @@ public class EmployeManagerTest {
         manager.save(new Employe("notHaveName", 78, 123414, "javaProcdcdcdcd"));
         manager.save(new Employe("notHaveName", 78, 123414, "javaProcdcdcdcd"));
         manager.save(new Employe("notHaveName", 78, 123414, "javaProcdcdcdcd"));
-//        manager.save(new Employe("Exclusive Name", 78, 123414, "Exclusive Job"));
+        manager.save(new Employe("Exclusive Name", 78, 123414, "Exclusive Job"));
     }
 
     @Test
