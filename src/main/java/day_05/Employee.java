@@ -12,13 +12,13 @@ import java.util.Objects;
  * решение должно быть грамотно разбито на классы, структурировано, работа с ошибками
  * подумать над тем что возможно стоит держать стрим открытым*/
 
-public class Employe implements Serializable {
+public class Employee implements Serializable {
     private String name;
     private int age;
     private int salary;
     private String job;
 
-    public Employe(String name, int age, int salary, String job) {
+    public Employee(String name, int age, int salary, String job) {
         this.name = name;
         this.age = age;
         this.salary = salary;
@@ -61,11 +61,11 @@ public class Employe implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Employe employe = (Employe) o;
-        return getAge() == employe.getAge() &&
-                getSalary() == employe.getSalary() &&
-                Objects.equals(getName(), employe.getName()) &&
-                Objects.equals(getJob(), employe.getJob());
+        Employee employee = (Employee) o;
+        return getAge() == employee.getAge() &&
+                getSalary() == employee.getSalary() &&
+                Objects.equals(getName(), employee.getName()) &&
+                Objects.equals(getJob(), employee.getJob());
     }
 
     @Override
@@ -76,7 +76,7 @@ public class Employe implements Serializable {
 
     @Override
     public String toString() {
-        return "Employe{" +
+        return "Employee{" +
                 "name='" + name + '\'' +
                 ", age=" + age +
                 ", salary=" + salary +

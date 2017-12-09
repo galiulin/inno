@@ -4,24 +4,24 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EmployeManager {
+public class EmployeeManager {
 
     private final File file;
     private final String fileName;
 
-    public EmployeManager() {
+    public EmployeeManager() {
         fileName = "Employers.dat";
         file = new File(fileName);
     }
 
-    public void save(Employe emp) throws IOException {
+    public void save(Employee emp) throws IOException {
         writeIntoFile((out) -> {
             out.writeObject(emp);
             return true;
         });
     }
 
-    private void saveAll(List<Employe> list) throws IOException {
+    private void saveAll(List<Employee> list) throws IOException {
         writeIntoFile(out -> {
             for (int i = 0; i < list.size(); i++) {
                 out.writeObject(list.get(i));
@@ -46,18 +46,18 @@ public class EmployeManager {
         }
     }
 
-    public void delete(Employe emp) throws IOException {
-        List<Employe> list = getAllEmployers();
+    public void delete(Employee emp) throws IOException {
+        List<Employee> list = getAllEmployers();
         list.remove(emp);
         overwriteFile(list);
     }
 
-    public Employe getByName(String name) throws IOException {
-        Employe readEl = getObjectsFromFile((objInStr) -> {
-            Employe empl = null;
+    public Employee getByName(String name) throws IOException {
+        Employee readEl = getObjectsFromFile((objInStr) -> {
+            Employee empl = null;
             do {
                 try {
-                    empl = (Employe) objInStr.readObject();
+                    empl = (Employee) objInStr.readObject();
                     if (empl != null && name.equals(empl.getName())) {
                         return empl;
                     }
@@ -83,16 +83,16 @@ public class EmployeManager {
     }
 
 
-    public List<Employe> getAllEmployers() throws IOException {
+    public List<Employee> getAllEmployers() throws IOException {
         return getObjectsFromFile((oin) -> {
-            List<Employe> arList = new ArrayList<>();
+            List<Employee> arList = new ArrayList<>();
 
             Object obj;
             do {
                 try {
                     obj = oin.readObject();
-                    if (obj instanceof Employe) {
-                        arList.add((Employe) obj);
+                    if (obj instanceof Employee) {
+                        arList.add((Employee) obj);
                     }
                 } catch (EOFException ex) {
                     obj = null;
@@ -102,40 +102,44 @@ public class EmployeManager {
         });
     }
 
-    public List<Employe> getByJob(String job) throws IOException {
-        List<Employe> list;
+    public List<Employee> getByJob(String job) throws IOException {
+        List<Employee> list;
         list = getByJobFromFile(job);
         if (list.size() == 0) throw new NotFoundEmploye("by job: " + job);
         return list;
     }
 
-    private List<Employe> getByJobFromFile(String job) throws IOException {
+    private List<Employee> getByJobFromFile(String job) throws IOException {
         return getObjectsFromFile((oin) -> {
-            List<Employe> arList = new ArrayList<>();
-            Employe employe = (Employe) oin.readObject();
-            while (employe != null) {
-                if (job != null && job.equals(employe.getJob())) {
-                    arList.add(employe);
-                }
+            List<Employee> arList = new ArrayList<>();
+            Object obj = null;
+            Employee employee;
+            do {
                 try {
-                    employe = (Employe) oin.readObject();
+                    obj = oin.readObject();
+                    if (obj instanceof Employee) {
+                        employee = (Employee) obj;
+                        if (job.equals(((Employee) obj).getJob())) {
+                            arList.add(employee);
+                        }
+                    }
                 } catch (EOFException ex) {
-                    employe = null;
+                    return arList;
                 }
-            }
+            } while (obj != null);
             return arList;
         });
     }
 
     public int getSalary() throws IOException {
-        List<Employe> list = getAllEmployers();
+        List<Employee> list = getAllEmployers();
         return calculateSalary(list);
     }
 
-    private int calculateSalary(List<Employe> list) {
+    private int calculateSalary(List<Employee> list) {
         int salary = 0;
-        for (Employe employe : list) {
-            salary += employe.getSalary();
+        for (Employee employee : list) {
+            salary += employee.getSalary();
         }
         return salary;
     }
@@ -148,10 +152,10 @@ public class EmployeManager {
             do {
                 try {
                     obj = oin.readObject();
-                    if (obj instanceof Integer){
+                    if (obj instanceof Integer) {
                         lastNumber = (Integer) obj;
                     }
-                } catch (EOFException ex){
+                } catch (EOFException ex) {
                     check = true;
                     return lastNumber;
                 }
@@ -161,7 +165,7 @@ public class EmployeManager {
         return salary;
     }
 
-    private void overwriteFile(List<Employe> list) throws IOException {
+    private void overwriteFile(List<Employee> list) throws IOException {
         Integer salary = calculateSalary(list);
         file.delete();
         saveAll(list);
