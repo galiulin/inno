@@ -8,14 +8,10 @@ public class EmployeManager {
 
     private final File file;
     private final String fileName;
-//    private List<Employe> list;
-//    private HashFile hashFile;
-//    private String hash;
 
-    public EmployeManager() throws IOException {
-        fileName = "Employrs.dat";
+    public EmployeManager() {
+        fileName = "Employers.dat";
         file = new File(fileName);
-//        initHash();
     }
 
     public void save(Employe emp) throws IOException {
@@ -38,14 +34,12 @@ public class EmployeManager {
         if (!file.exists()) {
             try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(fileName, true))) {
                 functionIO.apply(out);
-//                out.flush();
             } catch (ClassNotFoundException ex) {
                 /*do nothing*/
             }
         } else {
             try (ObjectOutputStream out = new AppendingObjectOutputStream(new FileOutputStream(fileName, true))) {
                 functionIO.apply(out);
-//                out.flush();
             } catch (ClassNotFoundException ex) {
                 /*do nothing*/
             }
@@ -55,9 +49,7 @@ public class EmployeManager {
     public void delete(Employe emp) throws IOException {
         List<Employe> list = getAllEmployers();
         list.remove(emp);
-        file.delete();
-//        initHash();
-        saveAll(list);
+        overwriteFile(list);
     }
 
     public Employe getByName(String name) throws IOException {
@@ -92,38 +84,27 @@ public class EmployeManager {
 
 
     public List<Employe> getAllEmployers() throws IOException {
-
-//        if (list != null && hashSumEquals()) return list;
-
         return getObjectsFromFile((oin) -> {
             List<Employe> arList = new ArrayList<>();
-            Employe em = (Employe) oin.readObject();
-            while (em != null) {
-                arList.add(em);
-                try {
-                    em = (Employe) oin.readObject();
-                } catch (EOFException ex) {
-                    em = null;
-                }
-            }
 
-//            list = arList;
+            Object obj;
+            do {
+                try {
+                    obj = oin.readObject();
+                    if (obj instanceof Employe) {
+                        arList.add((Employe) obj);
+                    }
+                } catch (EOFException ex) {
+                    obj = null;
+                }
+            } while (obj != null);
             return arList;
         });
     }
 
     public List<Employe> getByJob(String job) throws IOException {
         List<Employe> list;
-//        if (this.list == null || !hashSumEquals()) {
         list = getByJobFromFile(job);
-//        } else {
-//            list = new ArrayList<>();
-//            for (Employe em : list) {
-//                if (job.equals(em.getJob())) {
-//                    list.add(em);
-//                }
-//            }
-//        }
         if (list.size() == 0) throw new NotFoundEmploye("by job: " + job);
         return list;
     }
@@ -148,10 +129,10 @@ public class EmployeManager {
 
     public int getSalary() throws IOException {
         List<Employe> list = getAllEmployers();
-        return getSalary(list);
+        return calculateSalary(list);
     }
 
-    private int getSalary(List<Employe> list) {
+    private int calculateSalary(List<Employe> list) {
         int salary = 0;
         for (Employe employe : list) {
             salary += employe.getSalary();
@@ -159,44 +140,41 @@ public class EmployeManager {
         return salary;
     }
 
-    private Integer readSalaryAmount() throws IOException {
+    public Integer readSalaryAmount() throws IOException {
         Integer salary = getObjectsFromFile(oin -> {
-            Object obj = oin.readObject();
-            while (!(obj instanceof Integer)) {
-                oin.readObject();
-            }
-            return (Integer) obj;
+            Integer lastNumber = null;
+            Object obj = null;
+            boolean check = false;
+            do {
+                try {
+                    obj = oin.readObject();
+                    if (obj instanceof Integer){
+                        lastNumber = (Integer) obj;
+                    }
+                } catch (EOFException ex){
+                    check = true;
+                    return lastNumber;
+                }
+            } while (!check);
+            return lastNumber;
         });
         return salary;
     }
 
-//    private boolean hashSumEquals() throws FileNotFoundException {
-//        return this.hash.equals(hashFile.getHash());
-//    }
-//
-//    private boolean checkAndUpdateHashSum() throws IOException {
-//        initHash();
-//        String newHash = getHashFile().getHash();
-//        boolean changesWereMade = hash.equals(newHash);
-//        if (!changesWereMade) {
-//            hash = newHash;
-//        }
-//        return changesWereMade;
-//    }
-//
-//    private void initHash() throws IOException {
-//        try {
-//            hashFile = new HashFile(fileName, ALGORITHM.MD5);
-//        } catch (FileNotFoundException ex) {
-//            save(new Employe(null, 0, 0, null));
-//            hashFile = new HashFile(fileName, ALGORITHM.MD5);
-//        }
-//            hash = hashFile.getHash();
-//    }
-//
-//    private HashFile getHashFile() {
-//        return hashFile;
-//    }
+    private void overwriteFile(List<Employe> list) throws IOException {
+        Integer salary = calculateSalary(list);
+        file.delete();
+        saveAll(list);
+        writeSalary(salary);
+    }
+
+    public void writeSalary(int salary) throws IOException {
+        Integer salar = salary;
+        writeIntoFile((out) -> {
+            out.writeObject(salar);
+            return true;
+        });
+    }
 }
 
 class NotFoundEmploye extends RuntimeException {

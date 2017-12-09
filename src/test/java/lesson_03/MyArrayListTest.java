@@ -38,7 +38,7 @@ public class MyArrayListTest {
         assertTrue(myArrayList.contains("string"));
     }
 
-    @Test
+//    @Test
     public void toArray() {
         Object[] str2 = myArrayList.toArray();
         assertEquals(str2[0], "string");
