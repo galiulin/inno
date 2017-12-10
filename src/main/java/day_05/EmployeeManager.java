@@ -30,6 +30,19 @@ public class EmployeeManager {
         });
     }
 
+    public void writeOrUpdate(Employee obj) throws IOException {
+        List<Employee> list = getAllEmployers();
+        for (int i = 0; i < list.size(); i++) {
+            if (obj.getName().equals(list.get(i).getName())){
+                list.set(i, obj);
+                saveAll(list);
+                return;
+            }
+        }
+        save(obj);
+
+    }
+
     private <T> void writeIntoFile(FunctionIO<ObjectOutputStream, T> functionIO) throws IOException {
         if (!file.exists()) {
             try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(fileName, true))) {

@@ -111,4 +111,10 @@ public class EmployeeManagerTest {
         getAllEmployers();
 
     }
+
+    @Test
+    public void writeOrUpdate() throws IOException {
+        EmployeeManager em = new EmployeeManager();
+        em.writeOrUpdate(new Employee("10", 78, 123414, "Updated"));
+    }
 }
