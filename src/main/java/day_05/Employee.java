@@ -87,18 +87,18 @@ public class Employee implements Externalizable {
 
     @Override
     public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(name);
+        out.writeUTF(name);
         out.writeInt(age);
         out.writeInt(salary);
-        out.writeObject(job);
+        out.writeUTF(job);
     }
 
     @Override
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        this.name = (String) in.readObject();
+        this.name = in.readUTF();
         this.age = in.readInt();
         this.salary = in.readInt();
-        this.job = (String) in.readObject();
+        this.job = in.readUTF();
     }
 
     public Employee() {
