@@ -22,6 +22,7 @@ public class EmployeeManagerTest {
     public void tearDown() throws Exception {
     }
 
+    @Test
     public void save() throws IOException {
         EmployeeManager manager = new EmployeeManager();
         manager.save(employee);

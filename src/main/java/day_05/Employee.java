@@ -1,6 +1,6 @@
 package day_05;
 
-import java.io.Serializable;
+import java.io.*;
 import java.util.Objects;
 
 /*Итерация 1 сериализация по умолчанию
@@ -12,11 +12,12 @@ import java.util.Objects;
  * решение должно быть грамотно разбито на классы, структурировано, работа с ошибками
  * подумать над тем что возможно стоит держать стрим открытым*/
 
-public class Employee implements Serializable {
+public class Employee implements Externalizable {
     private String name;
     private int age;
     private int salary;
     private String job;
+    private static final long serialVersionUID = 7876559;
 
     public Employee(String name, int age, int salary, String job) {
         this.name = name;
@@ -82,5 +83,24 @@ public class Employee implements Serializable {
                 ", salary=" + salary +
                 ", job='" + job + '\'' +
                 '}';
+    }
+
+    @Override
+    public void writeExternal(ObjectOutput out) throws IOException {
+        out.writeObject(name);
+        out.writeInt(age);
+        out.writeInt(salary);
+        out.writeObject(job);
+    }
+
+    @Override
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        this.name = (String) in.readObject();
+        this.age = in.readInt();
+        this.salary = in.readInt();
+        this.job = (String) in.readObject();
+    }
+
+    public Employee() {
     }
 }
