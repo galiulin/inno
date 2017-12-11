@@ -49,7 +49,7 @@ public class Counter {
     }
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
 
         String word = "страдание";
 
@@ -58,9 +58,19 @@ public class Counter {
 
         File[] files = TestFiles.getFilesInFolder("src/main/java/trash/resources_for_tests/");
 
+        Thread[] threads = new Thread[files.length];
+        MyCounterWords[] myCounterWords = new MyCounterWords[files.length];
+
         for (int i = 0; i < files.length; i++) {
-            Thread thread = new Thread(new MyCounterWords(counter, files[i], word));
-            thread.run();
+            myCounterWords[i] = new MyCounterWords(counter, files[i], word);
+            threads[i] = new Thread(myCounterWords[i]);
+            threads[i].start();
+        }
+
+        for (int i = 0; i < threads.length; i++) {
+            threads[i].join();
+            System.out.println(myCounterWords[i].getFile().getName() + " : " + myCounterWords[i].getLocalCount());
+//            System.out.println(i);
         }
 
         counter.writeIntoFile();
@@ -83,6 +93,7 @@ class MyCounterWords implements Runnable {
     private final File file;
     private final Counter counter;
     private final String word;
+    private int localCount;
 
     @Override
     public void run() {
@@ -97,6 +108,7 @@ class MyCounterWords implements Runnable {
         this.file = file;
         this.counter = counter;
         this.word = word;
+        this.localCount = 0;
     }
 
     public void containString(File file) throws IOException {
@@ -119,6 +131,7 @@ class MyCounterWords implements Runnable {
     }
 
     private void incrementCounterAndCheck() {
+        localCount++;
         synchronized (counter) {
             counter.increment();
             if (counter.getCount() % 5 == 0){
@@ -144,6 +157,14 @@ class MyCounterWords implements Runnable {
                 j = 0;
             }
         }
+        return localCount;
+    }
+
+    public File getFile(){
+        return file;
+    }
+
+    public int getLocalCount(){
         return localCount;
     }
 }
