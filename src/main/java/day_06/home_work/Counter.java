@@ -4,17 +4,48 @@ import java.io.*;
 
 public class Counter {
     private int count;
+    private BufferedWriter writer;
 
     public synchronized void sumWithInt(int append) {
         count += append;
     }
 
-    public synchronized void increment(){
+    public synchronized void increment() {
         count++;
     }
 
     public synchronized int getCount() {
         return count;
+    }
+
+    public synchronized void initWriter() {
+        if (writer == null) {
+            try {
+                writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("output_file.txt")));
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public synchronized void writeIntoFile() {
+        initWriter();
+        try {
+            writer.write(count + "\r\n");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public synchronized void closeWriter() {
+        try {
+            if (writer != null) {
+                writer.close();
+                writer = null;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -23,6 +54,7 @@ public class Counter {
         String word = "страдание";
 
         Counter counter = new Counter();
+        counter.initWriter();
 
         File[] files = TestFiles.getFilesInFolder("src/main/java/trash/resources_for_tests/");
 
@@ -30,6 +62,9 @@ public class Counter {
             Thread thread = new Thread(new MyCounterWords(counter, files[i], word));
             thread.run();
         }
+
+        counter.writeIntoFile();
+        counter.closeWriter();
 
         System.out.println(counter.getCount());
     }
@@ -68,19 +103,38 @@ class MyCounterWords implements Runnable {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8"))) {
             do {
                 String line = reader.readLine();
-                counter.sumWithInt(checkLine(line.toLowerCase(), word.toLowerCase()));
+                substringAndCheck(line.toLowerCase(), word.toLowerCase());
             } while (reader.ready());
         }
     }
 
+    private void substringAndCheck(String review, String word) {
+        String[] s = review.split(" ");
+        for (int i = 0; i < s.length; i++) {
+            if (s[i].length() < word.length()) continue;
+            else if (checkLine(s[i], word) > 0) {
+                incrementCounterAndCheck();
+            }
+        }
+    }
+
+    private void incrementCounterAndCheck() {
+        synchronized (counter) {
+            counter.increment();
+            if (counter.getCount() % 5 == 0){
+                counter.writeIntoFile();
+            }
+        }
+    }
+
     public static int checkLine(String review, String word) {
-        char[] arrReviw = review.toCharArray();
+        char[] arrReview = review.toCharArray();
         char[] arrVerify = word.toCharArray();
         int localCount = 0;
         int j = 0;
-        if (arrReviw.length < arrVerify.length) return 0;
-        for (int i = 0; i < arrReviw.length; i++) {
-            if (arrReviw[i] == arrVerify[j]) {
+        if (arrReview.length < arrVerify.length) return 0;
+        for (int i = 0; i < arrReview.length; i++) {
+            if (arrReview[i] == arrVerify[j]) {
                 j++;
                 if (j == arrVerify.length) {
                     localCount++;
