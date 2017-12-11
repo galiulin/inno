@@ -3,9 +3,13 @@ package day_06.home_work;
 import java.io.*;
 
 public class Counter {
-    int count;
+    private int count;
 
-    public synchronized void apInt() {
+    public synchronized void sumWithInt(int append) {
+        count += append;
+    }
+
+    public synchronized void increment(){
         count++;
     }
 
@@ -16,11 +20,14 @@ public class Counter {
 
     public static void main(String[] args) {
 
+        String word = "страдание";
+
         Counter counter = new Counter();
 
         File[] files = TestFiles.getFilesInFolder("src/main/java/trash/resources_for_tests/");
+
         for (int i = 0; i < files.length; i++) {
-            Thread thread = new Thread(new MyCounterWords(counter, files[i]));
+            Thread thread = new Thread(new MyCounterWords(counter, files[i], word));
             thread.run();
         }
 
@@ -38,8 +45,9 @@ class TestFiles {
 
 class MyCounterWords implements Runnable {
 
-    private File file;
-    private Counter counter;
+    private final File file;
+    private final Counter counter;
+    private final String word;
 
     @Override
     public void run() {
@@ -50,40 +58,35 @@ class MyCounterWords implements Runnable {
         }
     }
 
-    public MyCounterWords(Counter counter, File file) {
+    public MyCounterWords(Counter counter, File file, String word) {
         this.file = file;
         this.counter = counter;
+        this.word = word;
     }
 
     public void containString(File file) throws IOException {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8"))) {
-            int i = 0;
             do {
                 String line = reader.readLine();
-                if (line.toLowerCase().contains("страдание")) {
-                    i++;
-                    counter.apInt();
-                }
+                counter.sumWithInt(checkLine(line.toLowerCase(), word.toLowerCase()));
             } while (reader.ready());
-            System.out.println(file.getName() + " " + i);
         }
     }
 
-    private int checkLine(String review, String verify) {
+    public static int checkLine(String review, String word) {
         char[] arrReviw = review.toCharArray();
-        char[] arrVerify = verify.toCharArray();
+        char[] arrVerify = word.toCharArray();
         int localCount = 0;
         int j = 0;
         if (arrReviw.length < arrVerify.length) return 0;
         for (int i = 0; i < arrReviw.length; i++) {
             if (arrReviw[i] == arrVerify[j]) {
                 j++;
-                if (j == arrVerify.length - 1){
+                if (j == arrVerify.length) {
                     localCount++;
                     j = 0;
                 }
-            }
-            else {
+            } else {
                 j = 0;
             }
         }
