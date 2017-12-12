@@ -83,7 +83,7 @@ public class Counter {
 class TestFiles {
     public static File[] getFilesInFolder(String folderPath) {
         File directory = new File(folderPath);
-        if (!directory.isDirectory()) throw new IllegalArgumentException();
+        if (!directory.exists() || !directory.isDirectory()) throw new IllegalArgumentException();
         return directory.listFiles(pathname -> pathname.getName().endsWith(".txt"));
     }
 }
