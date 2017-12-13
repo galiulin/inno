@@ -1,5 +1,7 @@
 package day_08.task_01;
 
+import static java.lang.Thread.sleep;
+
 public class Task {
 
     /*    1) Напишите программу, которая каждую секунду отображает на экране данные о времени, прошедшем от начала сессии,
@@ -10,78 +12,43 @@ public class Task {
       использование методов wait(), notifyAll().
       */
     public static void main(String[] args) {
-//        Object monitor = new Object();
-//        Timer timer = new Timer(1000);
-//        Thread thread = new Thread(timer);
-//        thread.start();
-//        MyTiming timing = new MyTiming(timer);
-//        timing.start();
-//        synchronized (timer){
-
-//        }
+        Timer timer = new Timer();
 
         Thread thread = new Thread(() -> {
-            int i = 5000;
             while (true) {
-                System.out.println(i += i);
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                timer.uppendTime(1000);
             }
         });
         thread.start();
-
-        Object monitor = new Object();
-        synchronized (monitor) {
-
-        }
-
+        Thread thread1 = new Thread(() -> {
+            System.out.println(timer.getTime());
+        });
+        thread1.start();
     }
 }
 
 
-class Timer implements Runnable {
+class Timer {
     int time = 0;
-    int localTime = 0;
+    volatile int localTime = 0;
 
-    Timer(int time) {
-        this.time = time;
+    Timer() {
     }
 
-    @Override
-    public void run() {
-        startTimer();
+    synchronized void uppendTime(int time) {
+        localTime = localTime + time;
     }
 
-    void startTimer() {
-        while (true) {
-            try {
-                wait(time);
-                System.out.println((localTime += time) / 1000);
-
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            if (localTime % 5 == 0) {
-                notifyAll();
-            }
-        }
-    }
-
-    int getTime() {
+    synchronized int getTime() {
         return localTime;
     }
 }
 
 class MyTiming extends Thread {
 
-    Timer timer;
-
-    MyTiming(Timer timer) {
-        this.timer = timer;
-    }
-
-    @Override
-    public void run() {
-        while (true) {
-            System.out.println(timer.getTime());
-        }
-    }
 }
