@@ -1,7 +1,5 @@
 package day_08.task_01;
 
-import static java.lang.Thread.sleep;
-
 public class Task {
 
     /*    1) Напишите программу, которая каждую секунду отображает на экране данные о времени, прошедшем от начала сессии,
@@ -11,44 +9,56 @@ public class Task {
      который выводит на экран другое сообщение каждые 7 секунд. Предполагается
       использование методов wait(), notifyAll().
       */
+
+    static volatile int localTime;
+    static final Object monitor = new Object();
+
     public static void main(String[] args) {
-        Timer timer = new Timer();
+        localTime = 0;
 
         Thread thread = new Thread(() -> {
-            while (true) {
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+            synchronized (monitor) {
+                while (true) {
+                    try {
+                        monitor.wait(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    localTime += 1000;
+                    monitor.notifyAll();
                 }
-                timer.uppendTime(1000);
             }
         });
         thread.start();
+
         Thread thread1 = new Thread(() -> {
-            System.out.println(timer.getTime());
+            while (true) {
+                synchronized (monitor) {
+                    try {
+                        monitor.wait();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    if (localTime % 5000 == 0)
+                    System.out.println(localTime / 1000);
+                }
+            }
         });
         thread1.start();
+
+        Thread thread2 = new Thread(() -> {
+            while (true) {
+                synchronized (monitor) {
+                    try {
+                        monitor.wait();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    if (localTime % 7000 == 0)
+                    System.out.println(localTime / 1000);
+                }
+            }
+        });
+        thread2.start();
     }
-}
-
-
-class Timer {
-    int time = 0;
-    volatile int localTime = 0;
-
-    Timer() {
-    }
-
-    synchronized void uppendTime(int time) {
-        localTime = localTime + time;
-    }
-
-    synchronized int getTime() {
-        return localTime;
-    }
-}
-
-class MyTiming extends Thread {
-
 }
