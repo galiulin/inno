@@ -1,26 +1,19 @@
 package day_08.task_lift;
 
+import java.util.Random;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.PriorityBlockingQueue;
 
 public class Main {
     static BlockingQueue<Integer> blockingQueue = new PriorityBlockingQueue<>();
-    static ConcurrentLinkedQueue<Integer> integers = new ConcurrentLinkedQueue<>();
+    static ConcurrentLinkedQueue<Integer> isWanted = new ConcurrentLinkedQueue<>();
 
     public static void main(String[] args) {
-        blockingQueue.add(3);
-        blockingQueue.add(6);
-        blockingQueue.add(9);
-//        blockingQueue.add(1);
-        blockingQueue.add(7);
 
-        integers.add(4);
-        integers.add(8);
-        integers.add(1);
-        integers.add(6);
-
-        Lift lift = new Lift(blockingQueue);
+        isWanted.add(4);
+//        Lift lift = new Lift(blockingQueue);
+        Lift lift = new Lift(isWanted);
 
         Thread thread = new Thread(new Runnable() {
             @Override
@@ -33,14 +26,22 @@ public class Main {
         Thread thread1 = new Thread(new Runnable() {
             @Override
             public void run() {
-                while (true){
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
+                Random random = new Random();
+                synchronized (lift) {
+                    while (true) {
+                        try {
+                            lift.wait(5000);
+                            int nextFloor = random.nextInt(20) + 1;
+                            isWanted.add(nextFloor);
+                            System.out.println(String.format("Добавлен этаж %d ", nextFloor));
+                            lift.notifyAll();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
             }
         });
+        thread1.start();
     }
 }
