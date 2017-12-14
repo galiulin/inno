@@ -19,9 +19,11 @@ public class Home {
     public void addHuman(Human human, int userChoise) {
         Pair pair = new Pair(human, userChoise);
         isWanted.add(pair);
-        synchronized (lift) {
-            lift.notifyAll();
-        }
+        Thread thread = new Thread(()-> {synchronized (lift){lift.notifyAll();}});
+        thread.start();
+//        synchronized (lift) {
+//            lift.notifyAll();
+//        }
     }
 
     class Pair {

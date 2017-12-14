@@ -17,10 +17,10 @@ public class Main {
                         int nextFloor = random.nextInt(20) + 1;
                         int nFloor = random.nextInt(20) + 1;
                         System.out.println(String.format("Вызвали на этаж %d ", nFloor));
-                        Thread.sleep(1000);
 
-                        home.addHuman(new Human("Не антоха" + counterAntoh++, nextFloor), nFloor);
+//                        home.addHuman(new Human("Не антоха" + counterAntoh++, nextFloor), nFloor);
                         home.addHuman(new Human("Антоха_" + counterAntoh++, nextFloor), nFloor);
+                        Thread.sleep(random.nextInt(20000) + 1);
 
                     }
                 } catch (InterruptedException e) {
