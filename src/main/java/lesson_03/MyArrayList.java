@@ -44,7 +44,7 @@ public class MyArrayList<E> implements List<E> {
         return temp;
     }
 
-    //fixme
+    //
     public <T> T[] toArray(T[] a) {
         T[] arr = (T[]) new Object[10]; //example
         throw new IgnoredMethod();
@@ -102,7 +102,7 @@ public class MyArrayList<E> implements List<E> {
         a[j] = swap;
     }
 
-    //todo check in junit test
+    // check in junit test
     public boolean containsAll(Collection<?> c) {
         Iterator<?> iterator = c.iterator();
         while (iterator.hasNext()){
@@ -131,12 +131,12 @@ public class MyArrayList<E> implements List<E> {
         return true;
     }
 
-    //todo
+    //
     public boolean removeIf(Predicate<? super E> filter) {
         return false;
     }
 
-    //todo
+    //
     public boolean retainAll(Collection<?> c) {
         return false;
     }
@@ -163,7 +163,7 @@ public class MyArrayList<E> implements List<E> {
 //        return null;
     }
 
-    //todo check in junit
+    // check in junit
     public int indexOf(Object o) {
         if (o == null) {
             for (int i = 0; i < size; i++)
@@ -219,21 +219,21 @@ public class MyArrayList<E> implements List<E> {
         return oldObj;
     }
 
-    //todo
+    //
     @Override
     public void add(int index, E element) {
         rangeCheck(index);
         moveForwardFrom(index);
     }
 
-    //fixme
+    //
     private void moveForwardFrom(int index){
         for (int i = index; i < size; i++) {
 
         }
     }
 
-    //todo check with junit
+    //
     @Override
     public E remove(int index) {
         E obj =(E) fastRemove(index);
@@ -256,19 +256,19 @@ public class MyArrayList<E> implements List<E> {
         return -1;
     }
 
-    //TODO
+    //
     @Override
     public ListIterator<E> listIterator() {
         return null;
     }
 
-    //TODO
+    //
     @Override
     public ListIterator<E> listIterator(int index) {
         return null;
     }
 
-    //TODO
+    //
     @Override
     public List<E> subList(int fromIndex, int toIndex) {
         return null;

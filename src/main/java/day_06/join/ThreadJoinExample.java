@@ -36,7 +36,7 @@ public class ThreadJoinExample {
             t2.join();
             t3.join();
         } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
+            //  Auto-generated catch block
             e.printStackTrace();
         }
 

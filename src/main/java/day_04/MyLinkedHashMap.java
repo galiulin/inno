@@ -105,7 +105,7 @@ public class MyLinkedHashMap<K, V> {
 
     public V get(final K key) {
         int index = hash(key);
-        if (index < hashTable.length && hashTable[index] != null) { /*todo в будущем вынести проверки в отдельные функции
+        if (index < hashTable.length && hashTable[index] != null) { /* в будущем вынести проверки в отдельные функции
                                                                         и при достижении лимитов выбрасывать исключения*/
 
             List<Node<K, V>> list = hashTable[index].getNodes();

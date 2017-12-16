@@ -173,7 +173,7 @@ class MyCounterWords implements Runnable {
             }
         }
     }
-    
+
     public File getFile() {
         return file;
     }
