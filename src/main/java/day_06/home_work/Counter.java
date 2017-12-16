@@ -1,8 +1,12 @@
 package day_06.home_work;
 
+import Utils.TestFiles;
+
 import java.io.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+//import static Utils.CountingOccurrencesRow.checkLine;
 
 public class Counter {
     private int count;
@@ -88,14 +92,6 @@ public class Counter {
     }
 }
 
-class TestFiles {
-    public static File[] getFilesInFolder(String folderPath) {
-        File directory = new File(folderPath);
-        if (!directory.exists() || !directory.isDirectory()) throw new IllegalArgumentException();
-        return directory.listFiles(pathname -> pathname.getName().endsWith(".txt"));
-    }
-}
-
 class MyCounterWords implements Runnable {
 
     private final File file;
@@ -120,7 +116,9 @@ class MyCounterWords implements Runnable {
     }
 
     public void containString(File file) throws IOException {
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8"))) {
+        try (BufferedReader reader = new BufferedReader(
+                new InputStreamReader(
+                        new FileInputStream(file), "UTF-8"))) {
             do {
                 String line = reader.readLine();
                 substringAndCheck(line.toLowerCase(), word);
@@ -132,7 +130,7 @@ class MyCounterWords implements Runnable {
         String[] s = review.split(" ");
         for (int i = 0; i < s.length; i++) {
             if (s[i].length() < word.length) continue;
-            else if (checkLine(s[i], word) > 0) {
+            else if (Utils.CountingOccurrencesRow.checkLine(s[i], word) > 0) {
                 incrementCounterAndCheck();
             }
         }
@@ -148,28 +146,28 @@ class MyCounterWords implements Runnable {
         }
     }
 
-    public static int checkLine(String review, char[] word) {
-        char[] arrReview = review.toCharArray();
-        int localCount = 0;
-        int j = 0;
+//    public static int checkLine(String review, char[] word) {
+//        char[] arrReview = review.toCharArray();
+//        int localCount = 0;
+//        int j = 0;
 //        if (arrReview.length < word.length) return 0; /*если длина проверяемого слова меньше длины слова то выходим*/ //временно убрал т.к. есть проверка
-                                                                        //в предыдущем уровне стека вызова данной функции и добавил проверку по оставшейся части
-        for (int i = 0; i < arrReview.length; i++) {
-            if (arrReview[i] == word[j]) {
-                j++;
-                if (j == word.length) {
-                    localCount++;
-                    j = 0;
-                }
-            } else {
-                j = 0;
-                if (arrReview.length - i < word.length)
-                    return 0; /*если длина оставшейся части массива меньше чем длина слова то выходим
-                     todo посчитать среднюю длину слова в текстах для того что-бы понять получаем ли мы преимущество с этой проверкой*/
-            }
-        }
-        return localCount;
-    }
+//                                                                        в предыдущем уровне стека вызова данной функции и добавил проверку по оставшейся части
+//        for (int i = 0; i < arrReview.length; i++) {
+//            if (arrReview[i] == word[j]) {
+//                j++;
+//                if (j == word.length) {
+//                    localCount++;
+//                    j = 0;
+//                }
+//            } else {
+//                j = 0;
+//                if (arrReview.length - i < word.length)
+//                    return 0; /*если длина оставшейся части массива меньше чем длина слова то выходим
+//                     todo посчитать среднюю длину слова в текстах для того что-бы понять получаем ли мы преимущество с этой проверкой*/
+//            }
+//        }
+//        return localCount;
+//    }
 
     public File getFile() {
         return file;

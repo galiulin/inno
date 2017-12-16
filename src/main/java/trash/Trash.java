@@ -11,5 +11,6 @@ public class Trash {
         list.set(0, 77);
         list.lastIndexOf(56);
         LinkedHashMap<Integer, String> linkedHashMap = new LinkedHashMap<>();
+        linkedHashMap.put(5, "dfadf");
     }
 }
