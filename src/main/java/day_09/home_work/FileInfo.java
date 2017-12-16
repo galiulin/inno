@@ -24,4 +24,12 @@ public class FileInfo {
     public void setCountWords(int countWords) {
         this.countWords = countWords;
     }
+
+    @Override
+    public String toString() {
+        return "FileInfo{" +
+                "fileName='" + fileName + '\'' +
+                ", countWords=" + countWords +
+                '}';
+    }
 }

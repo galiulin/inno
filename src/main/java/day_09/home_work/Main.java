@@ -4,22 +4,33 @@ import Utils.TestFiles;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.*;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
         File[] files = TestFiles.getFilesInFolder(
                 "src/main/java/trash/resources_for_tests/");
 
-        ExecutorService service =
-                Executors.newFixedThreadPool(20);
+        System.out.println(files.length);
 
-        List<Future<FileInfo>> futures = new ArrayList<>();
-        for (File file : files) {
-            Future<FileInfo> future = service.submit(new Suffering<FileInfo>(file, "страдание"));
-            futures.add(future);
-        }
+        Suffering<FileInfo> suffering = new Suffering<>(files[0], "страдание");
+        System.out.println(suffering.call());
+
+        String word = "страдание";
+        char[] arrWord = word.toCharArray();
+        System.out.println(Arrays.toString(arrWord));
+        System.out.println(arrWord.toString());
+
+//        ExecutorService service =
+//                Executors.newFixedThreadPool(20);
+
+//        List<Future<FileInfo>> futures = new ArrayList<>();
+//        for (File file : files) {
+//            Future<FileInfo> future = service.submit(new Suffering<FileInfo>(file, "страдание"));
+//            futures.add(future);
+//        }
 
     }
 
