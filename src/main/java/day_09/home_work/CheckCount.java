@@ -1,4 +1,4 @@
-package day_08.home_work;
+package day_09.home_work;
 
 public class CheckCount implements Runnable {
     @Override
