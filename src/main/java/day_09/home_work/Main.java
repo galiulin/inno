@@ -10,28 +10,20 @@ import java.util.concurrent.*;
 
 public class Main {
     public static void main(String[] args) throws Exception {
-        File[] files = TestFiles.getFilesInFolder(
+        List<File> files = TestFiles.getFilesInFolder(
                 "src/main/java/trash/resources_for_tests/");
 
-        System.out.println(files.length);
+        Suffering<FileInfo> suffering = new Suffering<>(files.get(0), "страдание");
+//        System.out.println(suffering.call());
 
-        Suffering<FileInfo> suffering = new Suffering<>(files[0], "страдание");
-        System.out.println(suffering.call());
+        ExecutorService service =
+                Executors.newFixedThreadPool(20);
 
-        String word = "страдание";
-        char[] arrWord = word.toCharArray();
-        System.out.println(Arrays.toString(arrWord));
-        System.out.println(arrWord.toString());
-
-//        ExecutorService service =
-//                Executors.newFixedThreadPool(20);
-
-//        List<Future<FileInfo>> futures = new ArrayList<>();
-//        for (File file : files) {
-//            Future<FileInfo> future = service.submit(new Suffering<FileInfo>(file, "страдание"));
-//            futures.add(future);
-//        }
-
+        List<Future<FileInfo>> futures = new ArrayList<>();
+        for (File file : files) {
+            Future<FileInfo> future = service.submit(new Suffering<FileInfo>(file, "страдание"));
+            futures.add(future);
+        }
     }
 
 

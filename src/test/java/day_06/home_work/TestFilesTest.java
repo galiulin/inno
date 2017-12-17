@@ -19,9 +19,9 @@ public class TestFilesTest {
 
     @Test
     public void getFilesInFolder() {
-        File[] files = TestFiles.getFilesInFolder("src/main/java/trash/resources_for_tests/");
-        for (File file: files){
-            System.out.println(file.getName());
-        }
+//        File[] files = TestFiles.getFilesInFolder("src/main/java/trash/resources_for_tests/");
+//        for (File file: files){
+//            System.out.println(file.getName());
+//        }
     }
 }

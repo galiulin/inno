@@ -3,6 +3,7 @@ package day_06.home_work;
 import Utils.TestFiles;
 
 import java.io.*;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -62,7 +63,7 @@ public class Counter {
         Counter counter = new Counter();
         counter.initWriter();
 
-        File[] files = TestFiles.getFilesInFolder("src/main/java/trash/resources_for_tests/");
+        List<File> files = TestFiles.getFilesInFolder("src/main/java/trash/resources_for_tests/");
 
         ExecutorService service = Executors.newFixedThreadPool(20);
 
@@ -81,11 +82,11 @@ public class Counter {
 
         service.shutdown();
 
-        Thread[] threads = new Thread[files.length];
-        MyCounterWords[] myCounterWords = new MyCounterWords[files.length];
+        Thread[] threads = new Thread[files.size()];
+        MyCounterWords[] myCounterWords = new MyCounterWords[files.size()];
 
-        for (int i = 0; i < files.length; i++) {
-            myCounterWords[i] = new MyCounterWords(counter, files[i], word);
+        for (int i = 0; i < files.size(); i++) {
+            myCounterWords[i] = new MyCounterWords(counter, files.get(i), word);
             threads[i] = new Thread(myCounterWords[i]);
             threads[i].start();
         }

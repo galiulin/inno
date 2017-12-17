@@ -15,7 +15,7 @@ public class Suffering<T extends FileInfo> implements Callable {
 
     public final static AtomicInteger atomicInteger = new AtomicInteger();
 
-    public static void inc() {
+    private static void incAtomInt() {
         atomicInteger.incrementAndGet();
     }
 
@@ -53,17 +53,20 @@ public class Suffering<T extends FileInfo> implements Callable {
         int localCount = 0;
         while ((poz = line.indexOf(word, poz + 1)) != -1) {
             localCount++;
+            incAtomInt();
         }
         return localCount;
     }
 
+
+    //TODO test in benchmark;
     private void substringAndCheck(String review) {
         String[] s = review.split(" ");
         for (int i = 0; i < s.length; i++) {
             if (s[i].length() < arrWord.length) continue;
             else if (Utils.CountingOccurrencesRow.checkLine(s[i], arrWord) > 0) {
                 localCount++;
-                inc();
+                incAtomInt();
             }
         }
     }
