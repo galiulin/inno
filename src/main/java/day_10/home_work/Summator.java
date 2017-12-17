@@ -8,20 +8,13 @@ import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.concurrent.locks.*;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class Summator {
     private static final ExecutorService service = Executors.newFixedThreadPool(20);
-
     private static final AtomicLong atomicLong = new AtomicLong(0);
-
-    private static final Lock lock = new ReentrantLock();
-//    private static final Lock getLock = new ReentrantReadWriteLock.ReadLock();
-
     private static final ReadWriteLock rwLock = new ReentrantReadWriteLock();
-
-    private static final Condition condition = lock.newCondition();
-
     private final File file;
 
     public Summator(File file) {
@@ -33,58 +26,56 @@ public class Summator {
         for (File file : list) {
             service.submit(() -> {
                 Summator s = new Summator(file);
-                s.summation();
+                long temp = s.summation();
+                System.out.printf("%d - в файле %s \r\n", temp, file.getName());
             });
         }
         service.shutdown();
 
 
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (!service.isTerminated()) {
-                    System.out.println(Summator.getValue());
-                }
+        Thread thread = new Thread(() -> {
+            while (!service.isTerminated()) {
+                System.out.println(Summator.getValue());
             }
         });
         thread.start();
     }
 
     private static void sum(int delta) {
-        lock.lock();
+        rwLock.readLock().lock();
         try {
-            atomicLong.addAndGet(delta);
-            condition.signalAll();
+            atomicLong.addAndGet(1);
         } finally {
-            lock.unlock();
+            rwLock.readLock().unlock();
         }
 
     }
 
     private static long getValue() {
         long num = 0;
-        lock.lock();
+        rwLock.writeLock().lock();
         try {
-            condition.await();
             num = atomicLong.get();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
         } finally {
-            condition.signalAll();
-            lock.unlock();
+            rwLock.writeLock().unlock();
         }
         return num;
 
     }
 
-    public void summation() {
+    public long summation() {
+        long localCount = 0;
         try (Scanner scanner = new Scanner(file)) {
             while (scanner.hasNext()) {
-                sum(scanner.nextInt());
+                localCount = scanner.nextInt();
+                if (localCount > 0) {
+                    sum((int) localCount);
+                }
             }
         } catch (FileNotFoundException ex) {
 
         }
+        return localCount;
     }
 
 }
