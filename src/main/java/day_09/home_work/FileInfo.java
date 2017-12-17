@@ -27,9 +27,8 @@ public class FileInfo {
 
     @Override
     public String toString() {
-        return "FileInfo{" +
-                "fileName='" + fileName + '\'' +
-                ", countWords=" + countWords +
-                '}';
+        return
+                "count words = " + countWords +
+                " ; fileName = '" + fileName + '\'';
     }
 }

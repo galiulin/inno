@@ -3,65 +3,53 @@ package day_09.home_work;
 import Utils.TestFiles;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.sql.Time;
+import java.util.*;
 import java.util.concurrent.*;
+import java.util.concurrent.locks.*;
 
 public class Main {
+    public static final ExecutorService service = Executors.newFixedThreadPool(20);
+
     public static void main(String[] args) throws Exception {
+
         List<File> files = TestFiles.getFilesInFolder(
                 "src/main/java/trash/resources_for_tests/");
 
-        Suffering<FileInfo> suffering = new Suffering<>(files.get(0), "страдание");
-//        System.out.println(suffering.call());
+//        List<File> files = TestFiles.getFilesInFolder("e:/Chtivo/Itar/_Utf8/");
 
-        ExecutorService service =
-                Executors.newFixedThreadPool(20);
+        Date before = new Date();
+
+
+        Thread thread = new Thread(() -> {
+            while (!service.isTerminated()) {
+                int i = Suffering.getInt();
+                if (i % 5 == 0)
+                    System.out.println(i);
+            }
+        });
+        thread.setDaemon(true);
+        thread.start();
 
         List<Future<FileInfo>> futures = new ArrayList<>();
         for (File file : files) {
             Future<FileInfo> future = service.submit(new Suffering<FileInfo>(file, "страдание"));
             futures.add(future);
         }
-    }
+        service.shutdown();
 
-
-    private void mainExample() {
-        ExecutorService executorService =
-                Executors.newFixedThreadPool(15);
-        List<Future<Object>> futures = new ArrayList<>();
-
-        for (int i = 0; i < 5; i++) {
-            Future<Object> future =
-                    executorService.submit(new Callable<Object>() {
-                        @Override
-                        public Object call() {
-                            int result = 0;
-                            for (int i = 0; i < 100; i++) {
-                                try {
-                                    Thread.sleep(Thread.currentThread().getId() * 10);
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
-                                }
-                                result += i;
-                            }
-                            return result;
-                        }
-                    });
-            futures.add(future);
-        }
+        List<FileInfo> soutList = new ArrayList<>();
 
         while (true) {
-            List<Future<Object>> tempFutures =
+            List<Future<FileInfo>> tempFutures =
                     new ArrayList<>();
             tempFutures.addAll(0, futures);
 
-            for (Future<Object> future :
+            for (Future<FileInfo> future :
                     tempFutures) {
                 if (future.isDone()) {
                     try {
-                        System.out.println(future.get());
+                        soutList.add(future.get());
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     } catch (ExecutionException e) {
@@ -72,21 +60,25 @@ public class Main {
             }
 
             if (futures.size() == 0)
-                return;
+                break;
         }
 
-        /*Future<Object> future = futures.get(0);
+        Date after = new Date();
 
-        try {
-            System.out.println(
-                    future.get(5, TimeUnit.SECONDS)
-            );
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (TimeoutException e) {
-            e.printStackTrace();
-        }*/
+        Collections.sort(soutList, (o1, o2) -> {
+            if (o1.getCountWords() == o2.getCountWords()) {
+                return 0;
+            } else if (o1.getCountWords() > o2.getCountWords()) {
+                return 1;
+            } else {
+                return -1;
+            }
+        });
+
+        soutList.stream().forEach(System.out::println);
+
+        System.out.printf("количество файлов %d\r\n", soutList.size());
+        System.out.printf("количество страданий %d\r\n", Suffering.getInt());
+        System.out.println("Потраченное время в мс " + (after.getTime() - before.getTime()));
     }
 }
