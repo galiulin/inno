@@ -7,12 +7,18 @@ import java.net.URL;
 
 public class ConsoleBrowser {
 
+    private PoolConnections poolConnections;
+
+    public ConsoleBrowser(PoolConnections poolConnections) {
+        this.poolConnections = poolConnections;
+    }
+
     public String getPage(String link) {
         StringBuilder strng = new StringBuilder("");
 
         try {
             URL url = new URL(link);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            HttpURLConnection connection = poolConnections.getConnection(url);
             connection.setRequestMethod("GET");
 //            connection.setRequestProperty("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8");
 //            connection.setRequestProperty("Accept-Language", "ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7");
