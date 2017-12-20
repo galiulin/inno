@@ -5,29 +5,36 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.Scanner;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class Summator {
     private static final ExecutorService service = Executors.newFixedThreadPool(20);
     private static final AtomicLong atomicLong = new AtomicLong(0);
-    private static final ReadWriteLock rwLock = new ReentrantReadWriteLock();
-    private final File file;
 
-    public Summator(File file) {
-        this.file = file;
-    }
+    private static final ArrayBlockingQueue<Long> queue = new ArrayBlockingQueue<>(1);
 
-    public static void doJob() {
-        List<File> list = Utils.TestFiles.getFilesInFolder("src/main/java/trash/resources_for_tests_02");
+    public static void doJob(List<File> list) {
         for (File file : list) {
             service.submit(() -> {
-                Summator s = new Summator(file);
-                long temp = s.summation();
-                System.out.printf("%d - в файле %s \r\n", temp, file.getName());
+                long temp = 0;
+                long localCount = 0;
+                try (Scanner scanner = new Scanner(file)) {
+                    while (scanner.hasNext()) {
+                        temp = scanner.nextLong();
+                        if (temp > 0) {
+                            localCount += temp;
+                            queue.put(temp);
+                        }
+                    }
+                } catch (FileNotFoundException ex) {
+                    ex.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                System.out.printf("%d - в файле %s \n", localCount, file.getName());
             });
         }
         service.shutdown();
@@ -35,47 +42,14 @@ public class Summator {
 
         Thread thread = new Thread(() -> {
             while (!service.isTerminated()) {
-                System.out.println(Summator.getValue());
-            }
-        });
-        thread.start();
-    }
-
-    private static void sum(int delta) {
-        rwLock.readLock().lock();
-        try {
-            atomicLong.addAndGet(1);
-        } finally {
-            rwLock.readLock().unlock();
-        }
-
-    }
-
-    private static long getValue() {
-        long num = 0;
-        rwLock.writeLock().lock();
-        try {
-            num = atomicLong.get();
-        } finally {
-            rwLock.writeLock().unlock();
-        }
-        return num;
-
-    }
-
-    public long summation() {
-        long localCount = 0;
-        try (Scanner scanner = new Scanner(file)) {
-            while (scanner.hasNext()) {
-                localCount = scanner.nextInt();
-                if (localCount > 0) {
-                    sum((int) localCount);
+                try {
+                    System.out.println(atomicLong.addAndGet(queue.take()));
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
             }
-        } catch (FileNotFoundException ex) {
-
-        }
-        return localCount;
+        });
+        thread.setDaemon(true);
+        thread.start();
     }
-
 }
