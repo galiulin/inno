@@ -16,12 +16,13 @@ public class PoolConnections {
 
     public PoolConnections(){}
 
-    public HttpURLConnection getConnection(URL url){
+    public HttpURLConnection getConnection(URL url, String requestMethod) {
         HttpURLConnection connection = null;
-        if (map.containsKey(url)) connection = map.get(url);
-        else {
+        connection = map.get(url);
+        if (connection == null) {
             try {
                 connection = (HttpURLConnection) url.openConnection();
+                connection.setRequestMethod(requestMethod);
                 map.put(url, connection);
             } catch (IOException e) {
                 e.printStackTrace();

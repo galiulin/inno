@@ -16,18 +16,24 @@ public class ConsoleBrowser {
     public String getPage(String link) {
         StringBuilder strng = new StringBuilder("");
 
+        if (!link.startsWith("https://"))
+            link = String.format("https://%s", link);
         try {
             URL url = new URL(link);
-            HttpURLConnection connection = poolConnections.getConnection(url);
-            connection.setRequestMethod("GET");
+            HttpURLConnection connection = poolConnections.getConnection(url, "GET");
+//            System.out.println(connection.getContent());
+//            connection.setRequestMethod("GET");
 //            connection.setRequestProperty("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8");
 //            connection.setRequestProperty("Accept-Language", "ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7");
 //            connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.84 Safari/537.36");
-
-            BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            InputStream is = connection.getInputStream();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(is));
             for (String tmp = reader.readLine(); tmp != null; tmp = reader.readLine()) {
-                strng.append(tmp + '\n');
+                strng.append(tmp);
             }
+//            connection.disconnect();
+//            is.reset();
+//            reader.reset();
         } catch (MalformedURLException e) {
             e.printStackTrace();
         } catch (IOException e) {
