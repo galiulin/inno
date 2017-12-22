@@ -1,4 +1,4 @@
-package com.pervushow.taxcalc;
+package day_15.lesson.taxcalc;
 
 import java.util.Scanner;
 

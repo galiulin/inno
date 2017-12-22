@@ -1,4 +1,4 @@
-package com.pervushow.streams;
+package day_15.lesson.streams;
 
 import java.util.ArrayList;
 import java.util.Optional;

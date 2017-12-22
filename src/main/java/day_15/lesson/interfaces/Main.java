@@ -1,4 +1,4 @@
-package com.pervushow.interfaces;
+package day_15.lesson.interfaces;
 
 
 import java.util.Comparator;

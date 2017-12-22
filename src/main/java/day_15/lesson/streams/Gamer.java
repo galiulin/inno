@@ -1,4 +1,4 @@
-package com.pervushow.streams;
+package day_15.lesson.streams;
 
 public class Gamer {
     private long weight;

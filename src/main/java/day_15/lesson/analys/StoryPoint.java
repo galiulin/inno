@@ -1,4 +1,4 @@
-package com.pervushow.analys;
+package day_15.lesson.analys;
 
 public class StoryPoint {
     private Client client;

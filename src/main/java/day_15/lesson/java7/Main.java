@@ -1,4 +1,4 @@
-package com.pervushow.java7;
+package day_15.lesson.java7;
 
 import java.util.Scanner;
 

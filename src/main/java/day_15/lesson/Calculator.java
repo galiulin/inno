@@ -1,4 +1,4 @@
-package com.pervushow;
+package day_15.lesson;
 
 import java.util.Scanner;
 import java.util.function.BiFunction;

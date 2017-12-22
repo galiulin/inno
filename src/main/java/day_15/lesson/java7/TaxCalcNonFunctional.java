@@ -1,4 +1,4 @@
-package com.pervushow.java7;
+package day_15.lesson.java7;
 
 public interface TaxCalcNonFunctional {
     double calcTax(int summ);

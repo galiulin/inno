@@ -1,4 +1,4 @@
-package com.pervushow.methodref;
+package day_15.lesson.methodref;
 
 public class Main {
     public static void main(String[] args) {

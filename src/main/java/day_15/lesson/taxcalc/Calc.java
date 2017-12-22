@@ -1,4 +1,4 @@
-package com.pervushow.taxcalc;
+package day_15.lesson.taxcalc;
 
 public class Calc implements TaxCalculator {
     @Override
