@@ -18,18 +18,18 @@ public class Main {
 
 //        List<File> files = TestFiles.getFilesInFolder("e:/Chtivo/Itar/_Utf8/");
 
-        Date before = new Date();
+        long before = System.currentTimeMillis();
 
-
-        Thread thread = new Thread(() -> {
+        Thread printCounter = new Thread(() -> {
             while (!service.isTerminated()) {
                 int i = Suffering.getInt();
                 if (i % 5 == 0)
                     System.out.println(i);
             }
         });
-        thread.setDaemon(true);
-        thread.start();
+        printCounter.setDaemon(true);
+        printCounter.start();
+
 
         List<Future<FileInfo>> futures = new ArrayList<>();
         for (File file : files) {
@@ -63,7 +63,8 @@ public class Main {
                 break;
         }
 
-        Date after = new Date();
+
+        long after = System.currentTimeMillis();
 
         Collections.sort(soutList, (o1, o2) -> {
             if (o1.getCountWords() == o2.getCountWords()) {
@@ -79,6 +80,6 @@ public class Main {
 
         System.out.printf("количество файлов %d\r\n", soutList.size());
         System.out.printf("количество страданий %d\r\n", Suffering.getInt());
-        System.out.println("Потраченное время в мс " + (after.getTime() - before.getTime()));
+        System.out.println("Потраченное время в мс " + (after - before));
     }
 }

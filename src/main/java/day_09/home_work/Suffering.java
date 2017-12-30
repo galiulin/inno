@@ -1,10 +1,8 @@
 package day_09.home_work;
 
 import java.io.*;
-import java.util.Queue;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -14,7 +12,7 @@ public class Suffering<T extends FileInfo> implements Callable {
     private final String word;
 
     private static final Lock lock = new ReentrantLock();
-    private static final Condition condition = lock.newCondition();
+//    private static final Condition condition = lock.newCondition();
 
     private static final BlockingQueue<Integer> queue = new ArrayBlockingQueue<>(50, true);
 
@@ -35,7 +33,7 @@ public class Suffering<T extends FileInfo> implements Callable {
         if (true) {
             try {
                 if (!Main.service.isTerminated()) {
-                    i = queue.poll(3, TimeUnit.SECONDS);
+                    i = queue.take();
                 } else {
                     i = atomicInteger.get();
                 }
@@ -45,19 +43,6 @@ public class Suffering<T extends FileInfo> implements Callable {
                 /* do nothing */
             }
         }
-    /*
-        try {
-            lock.lock();
-            if (!Main.service.isTerminated()) {
-                condition.await();
-            }
-            i = atomicInteger.get();
-        } catch (InterruptedException ex) {
-            ex.printStackTrace();
-        } finally {
-            lock.unlock();
-        }
-         */
         return i;
     }
 
@@ -81,9 +66,7 @@ public class Suffering<T extends FileInfo> implements Callable {
             while (reader.ready() && (line = reader.readLine()) != null) {
                 int i = 0;
                 i += containString(line.toLowerCase(), word);
-//                i += Utils.CountingOccurrencesRow.checkLine(line.toLowerCase(), arrWord);
                 localCount += i;
-//                atomicInteger.addAndGet(i);
             }
         }
         return localCount;
@@ -95,18 +78,6 @@ public class Suffering<T extends FileInfo> implements Callable {
         while ((poz = line.indexOf(word, poz + 1)) != -1) {
             localCount++;
             incAtomInt();
-        }
-        return localCount;
-    }
-
-    private int substringAndCheck(String review) {
-        int localCount = 0;
-        String[] s = review.split(" ");
-        for (int i = 0; i < s.length; i++) {
-            if (s[i].length() < arrWord.length) continue;
-            else if (Utils.CountingOccurrencesRow.checkLine(s[i], arrWord) > 0) {
-                localCount++;
-            }
         }
         return localCount;
     }
